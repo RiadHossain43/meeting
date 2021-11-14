@@ -24,7 +24,9 @@ export default function useVideo(initialState) {
     try {
       let stream = await navigator.mediaDevices.getUserMedia(mediaState);
       myStreamReference.current.srcObject = stream;
+      myStreamReference.current.muted = true;
       setMediaStream(stream)
+      _answer(stream)
     } catch (err) {
       console.log(err);
     }
@@ -42,29 +44,27 @@ export default function useVideo(initialState) {
       peerConnection.getPeer().on('open', id => {
         socketConnection.getSocket().emit('join-meeting', { meetingId: 'riads-meeting', userId: id })
         socketConnection.getSocket().on('join-success', (data) => {
-          _call(data)
-          _answer()
+          console.log(data.userId)
         })
       })
     })
   }
   async function _call(data) {
     let call = peerConnection.getPeer().call(data.userId, mediaStream)
-    console.log('New Call initiate...', call, data.userId)
-    call && call.on('stream', userStream => {
+    call.on('stream', userStream => {
       userStreamReference.current.srcObject = userStream
-      console.log('Connected...')
     })
   }
-  function _answer() {
+  function _answer(localStream) {
     peerConnection.getPeer().on('call', call => {
-      console.log('A new call is comming...')
-      call.answer(mediaStream)
+      call.answer(localStream)
       call.on('stream', userStream => {
         userStreamReference.current.srcObject = userStream
-        console.log('Answer done...')
       })
     })
+  }
+  function makeCall(userId) {
+    _call({ userId })
   }
   return {
     myStreamReference,
@@ -72,6 +72,7 @@ export default function useVideo(initialState) {
     mediaState,
     toggleVideo,
     toggleAudio,
-    joinMeeting
+    joinMeeting,
+    makeCall
   }
 }

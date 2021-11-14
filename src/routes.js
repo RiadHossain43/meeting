@@ -1,4 +1,4 @@
-import Video from "views/Video";
+import Video from "views/video/Video";
 const routes = [
   {
     layout: '/main',

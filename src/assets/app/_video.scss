@@ -1,4 +1,11 @@
 .video_container {
   height: 100%;
   max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.video_container video {
+  width: 40%;
+  margin: 3px;
 }

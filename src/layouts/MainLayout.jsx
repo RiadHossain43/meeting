@@ -1,5 +1,4 @@
 import React from "react";
-import Controls from "components/Controls";
 import routes from "routes";
 import { Route, Switch } from "react-router-dom";
 export default function MainLayout(props) {
@@ -20,7 +19,6 @@ export default function MainLayout(props) {
   }
   return (
     <div>
-      <Controls {...props} />
       <Switch>{getRouts(routes)}</Switch>
     </div>
   );

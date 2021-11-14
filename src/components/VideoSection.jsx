@@ -1,23 +1,26 @@
-import React, { useEffect, useState } from "react";
+import useVideo from "hooks/useVideo";
+import React from "react";
+import Controls from "./Controls";
 export default function VideoSection(props) {
-  let [myStream, setMyStream] = useState(null);
-  async function initializeStream() {
-    try {
-      let stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-      setMyStream(stream);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  useEffect(() => {
-    initializeStream();
-  }, []);
+  let {
+    myStreamReference,
+    userStreamReference,
+    mediaState,
+    toggleAudio,
+    toggleVideo,
+  } = useVideo();
   return (
-    <div className="video_container">
-      <video src={myStream} autoPlay></video>
-    </div>
+    <>
+      <Controls
+        mediaState={mediaState}
+        videoClick={toggleVideo}
+        audioClick={toggleAudio}
+        {...props}
+      />
+      <div className="video_container">
+        <video ref={myStreamReference} autoPlay></video>
+        <video ref={userStreamReference} autoPlay></video>
+      </div>
+    </>
   );
 }
